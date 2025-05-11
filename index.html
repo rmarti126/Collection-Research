@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Research Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    label, input, button {
+      display: block;
+      margin: 10px 0;
+    }
+    .search-links a {
+      display: inline-block;
+      margin-right: 10px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Collection Research Page</h1>
+  <form id="searchForm">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" name="name">
+
+    <label for="ssn">SSN (Last 4 digits):</label>
+    <input type="text" id="ssn" name="ssn">
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob">
+
+    <button type="button" onclick="generateLinks()">Generate Search Links</button>
+  </form>
+
+  <div class="search-links" id="results">
+    <!-- Links will populate here -->
+  </div>
+
+  <script>
+    function generateLinks() {
+      const name = document.getElementById('name').value.trim();
+      const dob = document.getElementById('dob').value.trim();
+      const ssn = document.getElementById('ssn').value.trim();
+
+      if (!name) return;
+      const query = encodeURIComponent(name);
+
+      const sites = {
+        'Google': `https://www.google.com/search?q=${query}`,
+        'LinkedIn': `https://www.linkedin.com/search/results/all/?keywords=${query}`,
+        'Facebook': `https://www.facebook.com/search/people/?q=${query}`,
+        'Instagram': `https://www.instagram.com/${query.replace(/ /g, '')}/`,
+        'Whitepages': `https://www.whitepages.com/name/${query}`,
+        'FastPeopleSearch': `https://www.fastpeoplesearch.com/name/${query}`,
+        'Spokeo': `https://www.spokeo.com/${query.replace(/ /g, '-')}`,
+        'TruthFinder': `https://www.truthfinder.com/results/?utm_term=${query}`
+      };
+
+      const results = document.getElementById('results');
+      results.innerHTML = '<h2>Search Links</h2>';
+      for (const [site, url] of Object.entries(sites)) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.textContent = site;
+        results.appendChild(a);
+      }
+    }
+  </script>
+</body>
+</html>
