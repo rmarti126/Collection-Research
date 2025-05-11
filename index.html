@@ -24,6 +24,10 @@
       color: #007BFF;
       text-decoration: none;
     }
+    .checklist label {
+      display: block;
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -39,12 +43,25 @@
     <input type="date" id="dob" name="dob">
 
     <button type="button" onclick="generateLinks()">Generate Search Links</button>
+    <button type="button" onclick="exportPDF()">Export to PDF</button>
   </form>
 
-  <div class="search-links" id="results">
-    <!-- Links will populate here -->
+  <div class="search-links" id="results"></div>
+
+  <h2>Asset Checklist</h2>
+  <div class="checklist">
+    <label><input type="checkbox"> Verified phone number</label>
+    <label><input type="checkbox"> Current address</label>
+    <label><input type="checkbox"> Place of employment</label>
+    <label><input type="checkbox"> Vehicle ownership</label>
+    <label><input type="checkbox"> Property ownership</label>
+    <label><input type="checkbox"> Bank account/location match</label>
+    <label><input type="checkbox"> Social media presence</label>
+    <label><input type="checkbox"> Legal judgments / liens</label>
+    <label><input type="checkbox"> Bankruptcy filings</label>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     function generateLinks() {
       const name = document.getElementById('name').value.trim();
@@ -74,6 +91,29 @@
         a.textContent = site;
         results.appendChild(a);
       }
+    }
+
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const name = document.getElementById('name').value;
+      const dob = document.getElementById('dob').value;
+      const ssn = document.getElementById('ssn').value;
+
+      doc.text("Collection Research Report", 10, 10);
+      doc.text(`Name: ${name}`, 10, 20);
+      doc.text(`DOB: ${dob}`, 10, 30);
+      doc.text(`SSN (Last 4): ${ssn}`, 10, 40);
+      doc.text("Generated Search Links:", 10, 50);
+
+      let y = 60;
+      const links = document.querySelectorAll(".search-links a");
+      links.forEach(link => {
+        doc.text(`- ${link.textContent}: ${link.href}`, 10, y);
+        y += 10;
+      });
+
+      doc.save("collection-research-report.pdf");
     }
   </script>
 </body>
